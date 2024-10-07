@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dự đoán loại vé</title>
+    <style>
+      /* Reset mặc định */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-image: url("https://wallpapercave.com/wp/wp12554174.jpg");
+        font-family: "Arial", sans-serif;
+        background-color: #f8f9fa;
+        color: #495057;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color:  brown;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
+        max-height: 90vh; /* Đảm bảo không bị mất phần tử nào khi cửa sổ thu nhỏ */
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        width: 30%;
+        font-size: 14px;
+        font-weight: bold;
+        color: #343a40;
+      }
+
+      .form-group input[type="number"],
+      .form-group select {
+        width: 65%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input[type="number"]:focus,
+      .form-group select:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+      .form-group input[type="date"]:focus,
+      .form-group select:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      input[type="date"],
+      input[type="text"],
+      input[type="datetime-local"] {
+        width: 65%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+      input[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+
+      h2 {
+        text-align: center;
+        color: #28a745;
+        margin-top: 20px;
+        font-size: 20px;
+      }
+
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Phân loại giá vé</h1>
+      <div class="form-group">
+        <label>Date_of_Journey:</label>
+        <input type="date" step="any" name="Dep_time" required />
+      </div>
+
+      <div class="form-group">
+        <label>Source:</label>
+        <input type="text" step="any" name="Duration" required />
+      </div>
+
+      <div class="form-group">
+        <label>Destination: </label>
+        <input type="text" step="any" name="Total_Stops" required />
+      </div>
+
+      <div class="form-group">
+        <label>Route: </label>
+        <input type="text" step="any" name="Price" required />
+      </div>
+
+      <div class="form-group">
+        <label>Arrival_Time: </label>
+        <input type="datetime-local" step="any" name="Price" required />
+      </div>
+
+      <div class="form-group">
+        <label>Additional_Info: </label>
+        <input type="text" step="any" name="Price" required />
+      </div>
+      <!-- /////////////////////// -->
+      <form id="predictionForm" method="post">
+        <div class="form-group">
+          <label for="Airplane">Airline</label>
+          <select name="Airplane" required>
+            <option value="" disabled selected>Chọn hãng hàng không</option>
+            <option value="0">IndiGo</option>
+            <option value="1">Air India</option>
+            <option value="2">Jet Airways</option>
+            <option value="3">Multiple carriers</option>
+            <option value="4">GoAir</option>
+            <option value="5">Vistara</option>
+            <option value="6">Air Asia</option>
+            <option value="7">Vistara Premium economy</option>
+            <option value="8">Jet Airways Business</option>
+            <option value="9">'Multiple carriers Premium economy</option>
+            <option value="10">Trujet</option>
+            <!-- Thêm các hãng hàng không khác tại đây -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="Dep_time">Dep_time:</label>
+          <input type="number" step="any" name="Dep_time" required />
+        </div>
+        <script>
+          // Hàm tính toán tổng số phút
+          function calculateMinutes() {
+            // Lấy giá trị giờ từ form
+            var depTime = document.getElementById("Dep_time").value;
+
+            var hours = parseFloat(depTime);
+
+                // Tách phần giờ và phần thập phân
+                var wholeHours = Math.floor(hours); // Phần nguyên là giờ
+                var fractionalHours = hours - wholeHours; // Phần thập phân là phút (theo phần trăm của giờ)
+
+                // Tính tổng số phút
+                var totalMinutes = (wholeHours * 60) + (fractionalHours * 60);
+
+            
+            document.getElementById("Dep_time").value = totalMinutes;
+          }
+
+          // Tự động kích hoạt khi người dùng nhập liệu
+          document.getElementById("Dep_time").addEventListener("blur", calculateMinutesFromTime);
+    </script>
+        </script>
+
+        <div class="form-group">
+          <label for="Duration">Duration:</label>
+          <input type="number" step="any" name="Duration" required />
+        </div>
+
+        <div class="form-group">
+          <label for="Total_Stops">Total_Stops:</label>
+          <input type="number" step="any" name="Total_Stops" required />
+        </div>
+
+        <div class="form-group">
+          <label for="Price">Price:</label>
+          <input type="number" step="any" name="Price" required />
+        </div>
+        <div class="form-group">
+          <label for="model">Chọn mô hình:</label>
+          <select name="model" required>
+            {% for model in model_names %}
+            <option value="{{ model }}">{{ model.capitalize() }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <input type="submit" value="Dự đoán" />
+      </form>
+
+      {% if prediction is not none %}
+      <h2>Dự đoán loại vé: {{ prediction }}</h2>
+      {% endif %}
+
+      <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn tải lại trang khi nhấn nút submit
+
+            // Lấy dữ liệu từ form
+            const formData = new FormData(this);
+
+            // Gửi dữ liệu form qua AJAX
+            fetch('/predict', { // Đường dẫn '/predict' là ví dụ, bạn thay bằng API của bạn
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Chuyển đổi phản hồi thành JSON
+            .then(data => {
+                // Hiển thị kết quả dự đoán trên giao diện
+                document.getElementById('result').textContent = Dự đoán loại vé: ${data.prediction};
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+      </script>
+    </div>
+  </body>
+</html>
